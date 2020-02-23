@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Log in</title>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+        <link href="static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet" media="screen" />
+        <link href="static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet" media="screen" />
+    </head>
+    <body>
+        
+        <div class="outter-form-login">
+            <div class="logo-login">
+                <em class="glyphicon glyphicon-user"></em>
+            </div>
+            <div class="col-md-4 col-md-offset-4 form-login">
+                <form th:action="@{/login}" class="inner-login" method="post">
+                    <h3 class="text-center title-login">Login Member</h3>
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="username" placeholder="Username">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="password" class="form-control" name="password" placeholder="Password">
+                    </div>
+
+                    <input type="submit" class="btn btn-block btn-custom-green" value="LOGIN" />
+
+                    <div class="text-center forget">
+                        <p>Forgot Password ?</p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+      xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Registrasi</title>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link href="static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet" media="screen" />
+        <link href="static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet" media="screen" />
+        <link rel="stylesheet" th:href="@{/css/bootstrap-select.min.css}" />
+        <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+        <script th:src="@{/js/jquery.infinitescroll.js}"></script>
+         <style>
+            .hidden {
+                display: none !important;
+            }
+        </style>
+
+    </head>    
+    <body>
+
+        <div class="container"> 
+            <div class="page-title-wrapper">
+                <h1 class="page-title">
+                    <span class="base" data-ui-id="page-title-wrapper" >From Registrasi</span>
+                </h1>
+            </div>    
+
+            <form  class="form-horizontal" th:action="@{/signup}" id="formSignup" method="post" th:object="${profile}" data-toggle="validator" >
+                <input type="hidden" th:field="*{id}" />
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="userlogin">Email
+                        <span style="color: red;">*</span>
+                    </label>
+                    <div class="col-sm-10">
+                        <input type="email"  th:field="*{user.email}" id="email_address" class="form-control" 
+                               value=" "
+                               data-validate="{required:true}" 
+                               required=""
+                               oninvalid="this.setCustomValidity('Email tidak boleh kosong')"
+                               oninput="setCustomValidity('')" />
+                        <span th:if="${#fields.hasErrors('user.email')}" th:errors="*{user.email}" class="text-danger"> errors</span>
+                         <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="password">Password
+                        <span style="color: red;">*</span>
+                    </label>
+                    <div class="col-sm-10">
+                        <input type="password" th:field="*{user.password}" id="password" class="form-control" 
+                               value=""
+                               data-password-min-length="6"
+                               data-password-min-character-sets="3"
+                               data-validate="{required:true, 'validate-customer-password':true}"
+                               autocomplete="off"
+                               required=""
+                               pattern=".{0}|.{6,}"
+                               oninvalid="this.setCustomValidity('Password tidak boleh kosong / minimum 6 karakter')"
+                               oninput="setCustomValidity('')"/>
+                        <span th:if="${#fields.hasErrors('user.password')}" th:errors="*{user.password}" class="text-danger">errors</span>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="passKonfirmasi">Password Konfirm
+                        <span style="color: red;">*</span>
+                    </label>
+                    <div class="col-sm-10">
+                        <input type="password" class="form-control"
+                               id="confirm_password" 
+                               value="" title="Konfirmasi Password" 
+                               required=""
+                               oninvalid="this.setCustomValidity('Konfirmasi Password kosong/Tidak sesuai. Silahkan cek kembali')"
+                               oninput="setCustomValidity('')"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="nama">Nama Lengkap
+                        <span style="color: red;">*</span>
+                    </label>
+                    <div class="col-sm-10">
+                        <input type="text" th:field="*{nama}" id="nama" class="form-control" 
+                               value=""
+                               data-validate="{required:true}" 
+                               required=""
+                               oninvalid="this.setCustomValidity('Nama Lengkap tidak boleh kosong')"
+                               oninput="setCustomValidity('')" />
+                        <strong><div th:if="${#fields.hasErrors('nama')}" th:errors="*{nama}" class="text-danger"> errors </div></strong>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="alamat">Alamat
+                        <span style="color: red;">*</span>
+                    </label>
+                    <div class="col-sm-10">
+                        <textarea th:field="*{alamat}" class="form-control" id="alamat" name="alamat" rows="3" 
+                                  value=""
+                                  data-validate="{required:true}" 
+                                  required=""
+                                  oninvalid="this.setCustomValidity('Alamat tidak boleh kosong')"
+                                  oninput="setCustomValidity('')"></textarea>
+                        <strong><div th:if="${#fields.hasErrors('alamat')}" th:errors="*{alamat}" class="text-danger"> errors </div></strong>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="provinsi">Provinsi
+                        <span style="color: red;">*</span>
+                    </label>
+                    <div class="col-sm-10">
+                        <select name="provinsi" class="form-control" data-live-search="true" 
+                                th:field="*{provinsi}" 
+                                data-error="Provinsi tidak boleh kosong." 
+                                data-size="5" 
+                                id="provinsi"
+                                title="Pilih Provinsi..." 
+                                required="true">
+                            <option value="">Pilih Provinsi</option>
+                            <option th:each="provinsi : ${listProvinsi}" th:value="${provinsi.getId()}" 
+                                    th:text="${provinsi.getNama()}">Options</option>
+                        </select>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <span th:if="${profile.kota != null}" id="kotaId" class="hidden" th:text="${profile.kota.id}"></span>
+                    <label class="control-label col-sm-2" for="kota">Kota
+                        <span style="color: red;">*</span>
+                    </label>
+                    <div class="col-sm-10">
+                        <select id="kota" 
+                                name="kota"
+                                class="form-control" 
+                                data-live-search="true" 
+                                th:field="*{kota}" 
+                                data-error="Kota tidak boleh kosong." 
+                                data-size="5" 
+                                title="Pilih Kota/Kabupaten..." 
+                                required="true">
+                        </select>
+                        <span th:unless="${profile.kota != null}" class="help-block" id="kota_infoPilihProvinsi">Pilih Provinsi terlebih dahulu</span>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <span th:if="${profile.kecamatan != null}" id="kecamatanId" class="hidden" th:text="${profile.kecamatan.id}"></span>
+                    <label class="control-label col-sm-2" for="kecamatan">Kecamatan
+                        <span style="color: red;">*</span>
+                    </label>
+                    <div class="col-sm-10">
+                        <select id="kecamatan" 
+                                name="kecamatan" 
+                                class="form-control" 
+                                data-live-search="true" 
+                                th:field="*{kecamatan}" 
+                                data-error="Kecamatan tidak boleh kosong." 
+                                data-size="5" 
+                                title="Pilih Kecamatan..." 
+                                required="true">
+                        </select>
+                        <span th:unless="${profile.kecamatan != null}" class="help-block" id="kecamatan_infoPilihKota">Pilih kota terlebih dahulu</span>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <span th:if="${profile.kelurahan != null}" id="kelurahanId" class="hidden" th:text="${profile.kelurahan.id}"></span>
+                    <label class="control-label col-sm-2" for="kecamatan">Kelurahan
+                        <span style="color: red;">*</span>
+                    </label>
+                    <div class="col-sm-10">
+                        <select id="kelurahan" 
+                                name="kelurahan" 
+                                class="form-control" 
+                                data-live-search="true" 
+                                th:field="*{kelurahan}" 
+                                data-error="Kelurahan tidak boleh kosong." 
+                                data-size="5" 
+                                title="Pilih Kelurahan..." 
+                                required="true">
+                        </select>
+                        <span th:unless="${profile.kelurahan != null}" class="help-block" id="kelurahan_infoPilihKecamatan">Pilih Kecamatan terlebih dahulu</span>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="tglLahir">Tgl Lahir
+                        <span style="color: red;">*</span>
+                    </label>
+                    <div class="col-sm-10">
+                        <input type="text" th:field="*{tgllahir}" id="tgllahir" class="form-control" name="tgllahir" 
+                               value=""
+                               placeholder="DD/MM/YYYY"
+                               data-validate="{required:true}" 
+                               required=""
+                               oninvalid="this.setCustomValidity('tgllahir tidak boleh kosong')"
+                               oninput="setCustomValidity('')" />
+                        <span th:if="${#fields.hasErrors('tgllahir')}" th:errors="*{tgllahir}" class="text-danger"> errors </span>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="ibukandung">Nama Ibu Kandung
+                        <span style="color: red;">*</span>
+                    </label>
+                    <div class="col-sm-10">
+                        <input type="text" th:field="*{ibukandung}" id="ibukandung" class="form-control" name="ibukandung"
+                               value=""
+                               data-validate="{required:true}" 
+                               required=""
+                               oninvalid="this.setCustomValidity('Alamat tidak boleh kosong')"
+                               oninput="setCustomValidity('')" />
+                        <span th:if="${#fields.hasErrors('alamat')}" th:errors="*{alamat}" class="text-danger"> errors </span>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="pendidikan">Pedidikan
+                        <span style="color: red;">*</span>
+                    </label>
+                    <div class="col-sm-10">
+                        <select th:field="*{pendidikan}" id="pendidikan" class="form-control" name="pendidikan" />
+                        <option value="S1">S1</option>
+                        <option value="D3">D3</option>
+                        <option value="SMA">SMA</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="pekerjaan">Pekerjaan
+                        <span style="color: red;">*</span>
+                    </label>
+                    <div class="col-sm-10">
+                        <select th:field="*{pekerjaan}" id="pekerjaan" class="form-control" name="pekerjaan">
+                            <option value="Karyawan Swata">Karyawan Swata</option>
+                            <option value="PNS">PNS</option>
+                            <option value="Wirausaha">Wirausaha</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-2">
+                        <button type="submit"  class="btn btn-block primary"><span>S A V E</span></button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+        <script type="text/javascript" th:src="@{/js/validator.min.js}"></script>
+        <script type="text/javascript" th:src="@{/js/region.js}"></script> 
+        <script type="text/javascript">
+            $(document).ready(function () {
+                function injectRegionValueOnEdit() {
+                    // Dirunning jika dalam keadaan Form Edit
+                    if ($("#kotaId").text()) {
+                        getListKota("kota",
+                                $("#provinsi").val(),
+                                $("#kotaId").text(),
+                                "formSignup");
+
+                        getListKecamatan("kecamatan",
+                                $("#kotaId").text(),
+                                $("#kecamatanId").text(),
+                                "formSignup");
+
+                        getListKelurahan("kelurahan",
+                                $("#kecamatanId").text(),
+                                $("#kelurahanId").text(),
+                                "formSignup");
+
+                        getKodePos("kodePos",
+                                "formSignup",
+                                $("#kelurahanId").text(),
+                                "formSignup");
+
+                    }
+                }
+                injectRegionValueOnEdit();
+
+                $("#provinsi").on("change", function () {
+                    var idProvinsi = $(this).val();
+                    getListKota("kota", idProvinsi);
+                });
+
+                $("#kota").on("change", function () {
+                    var idKota = $(this).val();
+                    getListKecamatan("kecamatan", idKota);
+                });
+
+                $("#kecamatan").on("change", function () {
+                    var idKecamatan = $(this).val();
+                    getListKelurahan("kelurahan", idKecamatan);
+                });
+
+                $("#kelurahan").on("change", function () {
+                    var idKelurahan = $(this).val();
+                    getKodePos("kodePos", "formSignup", idKelurahan);
+                });
+
+                $('#formSignup').validator().on('submit', function (e) {
+                    if (e.isDefaultPrevented()) {
+                        // handle the invalid form...
+                        return false;
+                    } else {
+                        // everything looks good!
+                        return true;
+                    }
+                });
+            });
+
+        </script>
+
+        <script>
+            var password = document.getElementById("password")
+                    , confirm_password = document.getElementById("confirm_password");
+
+            function validatePassword() {
+                if (password.value != confirm_password.value) {
+                    confirm_password.setCustomValidity("Konfirmasi Password Tidak Sesuai");
+                } else {
+                    confirm_password.setCustomValidity('');
+                }
+            }
+
+            password.onchange = validatePassword;
+            confirm_password.onkeyup = validatePassword;
+        </script>
+
+
+    </body>
+</html>
